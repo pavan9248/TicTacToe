@@ -1,0 +1,135 @@
+import java.util.*;
+import java.util.ArrayList; 
+public class Main
+{
+    static int i,j;
+	static ArrayList<Integer> playerPositions=new ArrayList<Integer>();
+	static ArrayList<Integer> cpuPositions=new ArrayList<Integer>();
+	public static void main(String[] args) {
+	    
+		char board[][]={{' ','|',' ','|',' '},
+		                {'-','+','-','+','-'},
+		                {' ','|',' ','|',' '},
+		                {'-','+','-','+','-'},
+		                {' ','|',' ','|',' '}};
+		printgameboard(board);
+		Scanner sc=new Scanner(System.in);
+		while(true){
+		   System.out.println("Give your position");
+		   int playerPos=sc.nextInt();
+		   while(cpuPositions.contains(playerPos))
+		   {
+		       System.out.println("sorry already placed give another positon");
+		       playerPos=sc.nextInt();
+		   }
+		   placePiece(board,playerPos,"player");
+		
+		   Random rand=new Random();
+		   int cpupos=rand.nextInt(9)+1;
+		   while(playerPositions.contains(cpupos))
+		   {
+		       cpupos=rand.nextInt(9)+1;
+		   }
+		   placePiece(board,cpupos,"cpu");
+		   printgameboard(board);
+		   String result=checkWinnner(board);
+		   if(result.equals("Congratulations You Won!! :)")||result.equals("Sorry,Cpu Won :(")||result.equals("It's a Tie!!"))
+		   {
+		       System.out.println(result);
+		       System.exit(0);
+		   }
+		   System.out.println(result);
+		}
+	}
+public static void printgameboard(char board[][])
+{
+    for(i=0;i<5;i++)
+		{
+		    for(j=0;j<5;j++){
+		    System.out.print(board[i][j]);
+		}
+		System.out.println();
+		}
+}
+public static void placePiece(char board[][],int pos,String user)
+{
+    char symbol='X';
+    if(user.equals("player"))
+    {
+        symbol='X';
+        playerPositions.add(pos);
+    }
+    else if(user.equals("cpu"))
+    {
+        symbol='O';
+        cpuPositions.add(pos);
+    }
+    switch(pos){
+        case 1:
+            board[0][0]=symbol;
+            break;
+        case 2:
+            board[0][2]=symbol;
+            break;
+        case 3:
+            board[0][4]=symbol;
+            break;
+        case 4:
+            board[2][0]=symbol;
+            break;
+        case 5:
+            board[2][2]=symbol;
+            break;    
+        case 6:
+            board[2][4]=symbol;
+            break;
+        case 7:
+            board[4][0]=symbol;
+            break;
+        case 8:
+            board[4][2]=symbol;
+            break;
+        case 9:
+            board[4][4]=symbol;
+            break;    
+    }
+}
+public static String checkWinnner(char board[][])
+{
+    List<Integer> topRow=new ArrayList<Integer>(
+                              Arrays.asList(1,2,3));
+    List<Integer> midRow=new ArrayList<Integer> (Arrays.asList(4,5,6));
+    List<Integer> bottomRow=new ArrayList<Integer>(Arrays.asList(7,8,9));
+    List<Integer> leftCol=new ArrayList<Integer>(Arrays.asList(1,4,7));
+    List<Integer> midCol=new ArrayList<Integer>(Arrays.asList(2,5,8));
+    List<Integer> rightCol=new ArrayList<Integer>(Arrays.asList(3,6,9));
+    List<Integer> cross1=new ArrayList<Integer>(Arrays.asList(1,5,9));
+    List<Integer> cross2=new ArrayList<Integer>(Arrays.asList(7,5,3));
+    
+    List<List> winning=new ArrayList<List>();
+    winning.add(topRow);
+    winning.add(midRow);
+    winning.add(bottomRow);
+    winning.add(leftCol);
+    winning.add(midCol);
+    winning.add(rightCol);
+    winning.add(cross1);
+    winning.add(cross2);
+    for(List l : winning)
+    {
+        if(playerPositions.containsAll(l))
+        {
+            return "Congratulations You Won!! :)";
+        }
+        else if(cpuPositions.containsAll(l))
+        {
+            return "Sorry,Cpu Won :(";
+        }
+        else if(playerPositions.size()+cpuPositions.size()==9)
+        {
+            return "It's a Tie!!";
+        }
+    }
+    return "";
+}
+}
